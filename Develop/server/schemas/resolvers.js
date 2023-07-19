@@ -7,8 +7,8 @@ const resolvers = {
     users: async () => {
       return await User.find({});
     },
-    user: async (parent, { username }) => {
-      return await User.findOne({ username }).populate('savedBooks');
+    user: async (parent, { userName }) => {
+      return await User.findOne({ userName }).populate('savedBooks');
     },
     me: async (parent, args, context) => {
       if (context.user) {
@@ -18,8 +18,8 @@ const resolvers = {
     },
   },
   Mutation: {
-    addUser: async (parent, { username, email, password }) => {
-      const user = await User.create({ username, email, password });
+    addUser: async (parent, { userName, email, password }) => {
+      const user = await User.create({ userName, email, password });
       const token = signToken(user);
 
       return { token, user };
