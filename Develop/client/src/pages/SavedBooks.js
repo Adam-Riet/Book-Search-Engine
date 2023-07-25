@@ -1,33 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Container,
-  Card,
-  Button,
-  Row,
-  Col
-} from 'react-bootstrap';
-
-
+import React from 'react';
+import { useQuery, useMutation } from '@apollo/client';
+import { Container, Card, Button, Row, Col } from 'react-bootstrap';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
-import { useQuery } from '@apollo/client';
-import { useMutation } from '@apollo/client';
-import { GET_ME } from '../utils/queries.js'
+import { GET_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
   // Execute the GET_ME query on load and save it to a variable named userData
-  const { loading, error, data } = useQuery(GET_ME);
+  const { loading, data } = useQuery(GET_ME);
+  const userData = data?.me;
 
-  // user data is stored in the 'data' variable from useQuery
-  let userData = data;
+  // Use the useMutation() Hook to execute the REMOVE_BOOK mutation
+  const [removeBook] = useMutation(REMOVE_BOOK);
 
-  // Define the REMOVE_BOOK mutation
-  const [removeBook, { error: mutationError }] = useMutation(REMOVE_BOOK);
-
-  // create function that accepts the book's mongo _id value as param and deletes the book from the database
+  // Create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
-    // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
     if (!token) {
@@ -35,22 +23,25 @@ const SavedBooks = () => {
     }
 
     try {
-      // execute the removeBook mutation and pass the necessary variables
-      const { data } = await removeBook({ 
-        variables: { 
-          bookId: bookId 
-        }
+      const { data } = await removeBook({
+        variables: { bookId },
+        update: (cache) => {
+          // Upon success, remove book's id from cache
+          const existingUser = cache.readQuery({ query: GET_ME });
+          const newUser = { ...existingUser };
+          newUser.me.savedBooks = newUser.me.savedBooks.filter(
+            (book) => book.bookId !== bookId
+          );
+          cache.writeQuery({ query: GET_ME, data: newUser });
+        },
       });
 
-      // upon success, remove book's id from localStorage
+      // Upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
       console.error(err);
     }
   };
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error! {error.message}</div>;
 
   // if data isn't here yet, say so
   if (loading) {
