@@ -10,7 +10,7 @@ import {
 
 
 import Auth from '../utils/auth';
-import { saveBook, searchGoogleBooks } from '../utils/API';
+import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 import { useMutation } from '@apollo/client';
 import { SAVE_BOOK } from '../utils/mutations';
@@ -53,7 +53,9 @@ const SearchBooks = () => {
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
-      }));
+        link: book.volumeInfo.infoLink
+      }
+      ));
 
       setSearchedBooks(bookData);
       setSearchInput('');
@@ -77,6 +79,7 @@ const handleSaveBook = async (bookId) => {
   }
 
   try {
+    console.log("Saving book: ", bookToSave);
     const { data } = await saveBook({
       variables: { bookData: bookToSave }
     });
@@ -128,8 +131,8 @@ const handleSaveBook = async (bookId) => {
         <Row>
           {searchedBooks.map((book) => {
             return (
-              <Col md="4">
-                <Card key={book.bookId} border='dark'>
+              <Col md="4" key={book.bookId}>
+                <Card border='dark'>
                   {book.image ? (
                     <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' />
                   ) : null}

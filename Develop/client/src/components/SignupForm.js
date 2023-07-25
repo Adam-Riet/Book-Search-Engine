@@ -17,9 +17,9 @@ const SignupForm = () => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    console.log('Name:', name, 'Value:', value);
+    
     setUserFormData({ ...userFormData, [name]: value });
-    console.log(userFormData);
+    
   };
 
   const handleFormSubmit = async (event) => {
@@ -32,7 +32,7 @@ const SignupForm = () => {
       event.stopPropagation();
     }
 
-    try {
+    try { console.log(userFormData);
       const { data } = await addUser({
         variables: { ...userFormData }
       });
