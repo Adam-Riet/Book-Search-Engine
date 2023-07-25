@@ -36,12 +36,13 @@ const resolvers = {
         throw new AuthenticationError('Incorrect password!');
       }
 
+      
+
       const token = signToken(user);
+      
       return { token, user };
     },
     saveBook: async (parent, { bookData }, context) => {
-      console.log(bookData);
-      console.log(context.user);
       if (context.user) {
         return User.findOneAndUpdate(
           { _id: context.user._id },
