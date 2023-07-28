@@ -8,8 +8,8 @@
     "develop": "concurrently \"cd server && npm run watch\" \"cd client && npm start\"",
     "install": "cd server && npm i && cd ../client && npm i",
     "build": "cd client && npm run build",
-    "heroku-prebuild": "echo \"/build\" >> .gitignore && git rm -r --cached . && git add . && git commit -am 'Ignore build'",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "heroku-prebuild": "npm install concurrently",
+    "heroku-postbuild": "npm run build"
   },
   "keywords": [],
   "author": "",
@@ -18,3 +18,4 @@
     "concurrently": "^5.1.0"
   }
 }
+
