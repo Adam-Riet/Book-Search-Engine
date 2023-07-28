@@ -1,8 +1,8 @@
-![App screenshot]()
+![App screenshot](client/public/search.png)
 
 ## Description
 
-This project is a Book Search Engine that started as a RESTful API-based application. It has been refactored into a MERN stack application using Apollo and GraphQL. This application allows users to save book selections to a personal list after logging in. Check out the [site here](https://your-heroku-app.herokuapp.com/).
+This project is a Book Search Engine that started as a RESTful API-based application. It has been refactored into a MERN stack application using Apollo and GraphQL. This application allows users to save book selections to a personal list after logging in. Check out the [site here](https://book-search-engine2023-f067c82bf9e1.herokuapp.com/).
 
 ## Table of Contents
 - [Description](#description)
